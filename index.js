@@ -2,7 +2,7 @@ console.log("============================CODE: 002==============================
 const SerialPort = require('serialport');
 const porNumber = process.argv[2];
 console.log("Port at : " + porNumber);
-const mord = new SerialPort(porNumber,{
+const port = new SerialPort(porNumber,{
 	baudRate : 57600// 115200 
 });
 
@@ -14,12 +14,12 @@ const parser = new parsers.Readline({
 	delimeter : '\r\n' 
 });
 
-mord.pipe(parser);
-mord.on('open', ()=>{
+port.pipe(parser);
+port.on('open', ()=>{
 	console.log('Connected at : '+ porNumber);
 	let timeOut = 3000;
 	setTimeout(()=>{
-		mord.write('1', (err)=>{
+		port.write('1', (err)=>{
 			if(err)
 				console.log(err);
 			else
@@ -58,10 +58,10 @@ io.on('connection', (socket)=>{
 
 	parser.on('data', (data)=>{
 		let parseResult = parsingRawData(data, "*");
-		if (parseResult[0] == " 69 "){
+		// if (parseResult[0] == " 69 "){
 			socket.emit('socketData', {dataMuncul : parseResult});//membuat objek untuk menaruh data parsing
 				console.log(parseResult);
-		}
+		// }
 	});
 
 	socket.on('disconnect', ()=>{
@@ -69,14 +69,14 @@ io.on('connection', (socket)=>{
 		console.log('Client just disconn..');
 	});
 
-	socket.on('savingData', function parsingRawData(data, delimeter){
-		console.log('Saving Data')
-		logger.write("Date Time : "+ moment().format("DD-MM-YYYY_HH-mm-ss") +"\r\n");
-		logger.write("Head || Humi || Roll || Yaw || Pitch || Gas || HDOP || Lintang \t Bujur " + "\r\n");
-		logger.write("[========================================================================]" + "\r\n");
-        logger.write(hasil + '\r\n\n');
-		logger.write("[========================================================================]" + "\r\n");
-	});
+	// socket.on('savingData', function parsingRawData(data, delimeter){
+	// 	console.log('Saving Data')
+	// 	logger.write("Date Time : "+ moment().format("DD-MM-YYYY_HH-mm-ss") +"\r\n");
+	// 	logger.write("Head || Humi || Roll || Yaw || Pitch || Gas || HDOP || Lintang \t Bujur " + "\r\n");
+	// 	logger.write("[========================================================================]" + "\r\n");
+ //        logger.write(hasil + '\r\n\n');
+	// 	logger.write("[========================================================================]" + "\r\n");
+	// });
 });
 let hasil;
 function parsingRawData(data, delimeter){
@@ -84,7 +84,7 @@ function parsingRawData(data, delimeter){
 	hasil = data.toString().replace(/(\r\n|\n\r)/gm,"").split(delimeter);
 	return hasil;
 }
-var logger = fs.createWriteStream('save.txt' , {
-  flags : 'a'
-});
+// var logger = fs.createWriteStream('save.txt' , {
+//   flags : 'a'
+// });
 
